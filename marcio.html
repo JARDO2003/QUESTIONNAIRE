@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Groupe Express - Dashboard des Réponses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(15px);
+      padding: 2.5em;
+      border-radius: 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+      animation: slideIn 0.8s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #3498db;
+    }
+    
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-size: 2.5em;
+      margin: 0;
+      font-weight: 300;
+    }
+    
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 1.1em;
+      margin-top: 10px;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+    
+    .score-card {
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      box-shadow: 0 15px 35px rgba(39, 174, 96, 0.3);
+    }
+    
+    .score-number {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .score-label {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+    
+    .score-description {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+    
+    .controls {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .btn-danger:hover {
+      box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+    }
+    
+    .responses-container {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+    
+    .response-item {
+      padding: 20px;
+      border-bottom: 1px solid #ecf0f1;
+      margin-bottom: 20px;
+      border-left: 4px solid;
+      background: #f8f9fa;
+      border-radius: 0 10px 10px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .response-item:hover {
+      background: #e8f4f8;
+      transform: translateX(5px);
+    }
+    
+    .response-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .response-id {
+      font-weight: bold;
+      color: #2c3e50;
+      font-size: 1.1em;
+    }
+    
+    .response-date {
+      color: #7f8c8d;
+      font-size: 0.9em;
+    }
+    
+    .response-answers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .answer-group {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .question-text {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+    }
+    
+    .answer-text {
+      color: #27ae60;
+      font-weight: 500;
+    }
+    
+    .comment-section {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #ffc107;
+      margin-top: 15px;
+    }
+    
+    .comment-title {
+      font-weight: bold;
+      color: #856404;
+      margin-bottom: 5px;
+    }
+    
+    .comment-text {
+      color: #664d03;
+      font-style: italic;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: #7f8c8d;
+      font-size: 1.2em;
+    }
+    
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 50px;
+      color: #7f8c8d;
+      font-size: 1.2em;
+    }
+    
+    .analysis-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .analysis-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-left: 4px solid #3498db;
+    }
+    
+    .analysis-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+    
+    .analysis-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #ecf0f1;
+    }
+    
+    .analysis-item:last-child {
+      border-bottom: none;
+    }
+    
+    .analysis-percentage {
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5em;
+        margin: 10px;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .response-answers {
+        grid-template-columns: 1fr;
+      }
+      
+      .analysis-container {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2em;
+      }
+      
+      .score-number {
+        font-size: 3em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">GE</div>
+      <h1>Dashboard Groupe Express</h1>
+      <div class="subtitle">Analyse des réponses du questionnaire étudiant</div>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-number" id="totalResponses">0</div>
+        <div class="stat-label">Réponses Totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="averageScore">0</div>
+        <div class="stat-label">Note Moyenne (/10)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="satisfactionRate">0%</div>
+        <div class="stat-label">Taux de Satisfaction</div>
+      </div>
+    </div>
+    
+    <div class="score-card" id="scoreCard">
+      <div class="score-number" id="globalScore">0.0</div>
+      <div class="score-label">Note Globale de l'Entreprise</div>
+      <div class="score-description" id="scoreDescription">Calcul en cours...</div>
+    </div>
+    
+    <div class="controls">
+      <button class="btn" onclick="loadResponses()">🔄 Actualiser</button>
+      <button class="btn" onclick="exportData()">📊 Exporter CSV</button>
+      <button class="btn btn-danger" onclick="clearAllData()">🗑️ Effacer Données</button>
+    </div>
+    
+    <div class="analysis-container" id="analysisContainer">
+      <!-- L'analyse sera générée dynamiquement -->
+    </div>
+    
+    <div class="responses-container">
+      <h2 style="margin-bottom: 20px; color: #2c3e50;">📋 Réponses Détaillées</h2>
+      <div id="responsesContainer" class="loading">
+        Chargement des réponses...
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuration Firebase (même que dans le questionnaire)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZKSBcBeE_ddlqrmNAru_YZRS4tAwRRvk",
+      authDomain: "database-5583e.firebaseapp.com",
+      databaseURL: "https://database-5583e-default-rtdb.firebaseio.com",
+      projectId: "database-5583e",
+      storageBucket: "database-5583e.firebasestorage.app",
+      messagingSenderId: "299502845257",
+      appId: "1:299502845257:web:c77c7f9ebc743abb63ee98",
+      measurementId: "G-YK85043ZPR"
+    };
+
+    // Initialiser Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Variables globales
+    let allResponses = [];
+    
+    // Questions du questionnaire
+    const questions = {
+      q1: "Que pensez-vous de la qualité de nos services ?",
+      q2: "Nos prix sont-ils abordables ?",
+      q3: "Êtes-vous satisfait du choix des repas proposés ?",
+      q4: "Comment jugez-vous la rapidité du service ?",
+      q5: "Le personnel est-il courtois et professionnel ?",
+      q6: "Recommenderiez-vous Groupe Express à d'autres étudiants ?",
+      q7: "Trouvez-vous la portion des repas suffisante ?",
+      q8: "Comment évaluez-vous la propreté de nos locaux ?",
+      q9: "Les horaires d'ouverture sont-ils adaptés ?",
+      q10: "Globalement, êtes-vous satisfait de Groupe Express ?"
+    };
+    
+    // Système de notation pour chaque réponse
+    const scoringSystem = {
+      q1: { "Excellent": 10, "Bon": 7, "Moyen": 4, "Mauvais": 1 },
+      q2: { "Oui": 10, "Non": 2 },
+      q3: { "Très satisfait": 10, "Satisfait": 7, "Peu satisfait": 4, "Pas du tout": 1 },
+      q4: { "Très rapide": 10, "Rapide": 8, "Correcte": 6, "Lente": 2 },
+      q5: { "Oui": 10, "Non": 1 },
+      q6: { "Oui": 10, "Non": 1 },
+      q7: { "Oui": 10, "Non": 3 },
+      q8: { "Excellente": 10, "Bonne": 7, "Moyenne": 4, "Mauvaise": 1 },
+      q9: { "Oui": 10, "Non": 3 },
+      q10: { "Très satisfait": 10, "Satisfait": 7, "Peu satisfait": 4, "Pas du tout": 1 }
+    };
+    
+    // Fonction pour calculer la note d'une réponse
+    function calculateResponseScore(response) {
+      let totalScore = 0;
+      let questionCount = 0;
+      
+      for (let i = 1; i <= 10; i++) {
+        const questionKey = `q${i}`;
+        if (response[questionKey] && scoringSystem[questionKey]) {
+          const answerScore = scoringSystem[questionKey][response[questionKey]] || 0;
+          totalScore += answerScore;
+          questionCount++;
+        }
+      }
+      
+      return questionCount > 0 ? (totalScore / questionCount) : 0;
+    }
+    
+    // Fonction pour obtenir la description de la note
+    function getScoreDescription(score) {
+      if (score >= 9) return "🌟 Excellente performance ! Les clients sont très satisfaits.";
+      if (score >= 7.5) return "👍 Bonne performance. Quelques améliorations possibles.";
+      if (score >= 6) return "⚠️ Performance correcte mais des efforts sont nécessaires.";
+      if (score >= 4) return "🔧 Performance insuffisante. Améliorations urgentes requises.";
+      return "🚨 Performance critique. Action immédiate nécessaire.";
+    }
+    
+    // Fonction pour obtenir la couleur de la note
+    function getScoreColor(score) {
+      if (score >= 8) return "linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)";
+      if (score >= 6.5) return "linear-gradient(135deg, #f39c12 0%, #e67e22 100%)";
+      if (score >= 5) return "linear-gradient(135deg, #e67e22 0%, #d35400 100%)";
+      return "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)";
+    }
+    
+    // Fonction pour charger les réponses depuis Firebase
+    async function loadResponses() {
+      try {
+        document.getElementById('responsesContainer').innerHTML = '<div class="loading">Chargement des réponses...</div>';
+        
+        const snapshot = await database.ref('questionnaires').once('value');
+        const data = snapshot.val();
+        
+        if (!data) {
+          document.getElementById('responsesContainer').innerHTML = '<div class="no-data">Aucune réponse trouvée.</div>';
+          updateStats([]);
+          return;
+        }
+        
+        // Convertir les données en tableau et trier par date
+        allResponses = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).sort((a, b) => new Date(b.dateSubmitted) - new Date(a.dateSubmitted));
+        
+        displayResponses(allResponses);
+        updateStats(allResponses);
+        generateAnalysis(allResponses);
+        
+      } catch (error) {
+        console.error('Erreur lors du chargement:', error);
+        document.getElementById('responsesContainer').innerHTML = 
+          `<div class="error">Erreur lors du chargement des données: ${error.message}</div>`;
+      }
+    }
+    
+    // Fonction pour afficher les réponses
+    function displayResponses(responses) {
+      const container = document.getElementById('responsesContainer');
+      
+      if (responses.length === 0) {
+        container.innerHTML = '<div class="no-data">Aucune réponse à afficher.</div>';
+        return;
+      }
+      
+      const html = responses.map(response => {
+        const score = calculateResponseScore(response);
+        const borderColor = score >= 7 ? '#27ae60' : score >= 5 ? '#f39c12' : '#e74c3c';
+        const date = new Date(response.dateSubmitted).toLocaleString('fr-FR');
+        
+        const answersHtml = Object.keys(questions).map(questionKey => {
+          if (response[questionKey]) {
+            return `
+              <div class="answer-group">
+                <div class="question-text">${questions[questionKey]}</div>
+                <div class="answer-text">${response[questionKey]}</div>
+              </div>
+            `;
+          }
+          return '';
+        }).join('');
+        
+        const commentHtml = response.comment ? `
+          <div class="comment-section">
+            <div class="comment-title">💬 Commentaire :</div>
+            <div class="comment-text">${response.comment}</div>
+          </div>
+        ` : '';
+        
+        return `
+          <div class="response-item" style="border-left-color: ${borderColor}">
+            <div class="response-header">
+              <div class="response-id">Réponse #${response.submissionId} - Note: ${score.toFixed(1)}/10</div>
+              <div class="response-date">${date}</div>
+            </div>
+            <div class="response-answers">
+              ${answersHtml}
+            </div>
+            ${commentHtml}
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+    }
+    
+    // Fonction pour mettre à jour les statistiques
+    function updateStats(responses) {
+      const totalResponses = responses.length;
+      document.getElementById('totalResponses').textContent = totalResponses;
+      
+      if (totalResponses === 0) {
+        document.getElementById('averageScore').textContent = '0';
+        document.getElementById('satisfactionRate').textContent = '0%';
+        document.getElementById('globalScore').textContent = '0.0';
+        document.getElementById('scoreDescription').textContent = 'Aucune donnée disponible';
+        return;
+      }
+      
+      // Calculer la note moyenne
+      const scores = responses.map(calculateResponseScore);
+      const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+      
+      // Calculer le taux de satisfaction (réponses >= 7/10)
+      const satisfiedCount = scores.filter(score => score >= 7).length;
+      const satisfactionRate = (satisfiedCount / totalResponses) * 100;
+      
+      // Mettre à jour l'affichage
+      document.getElementById('averageScore').textContent = averageScore.toFixed(1);
+      document.getElementById('satisfactionRate').textContent = `${satisfactionRate.toFixed(1)}%`;
+      document.getElementById('globalScore').textContent = averageScore.toFixed(1);
+      document.getElementById('scoreDescription').textContent = getScoreDescription(averageScore);
+      
+      // Changer la couleur de la carte score
+      const scoreCard = document.getElementById('scoreCard');
+      scoreCard.style.background = getScoreColor(averageScore);
+    }
+    
+    // Fonction pour générer l'analyse détaillée
+    function generateAnalysis(responses) {
+      if (responses.length === 0) {
+        document.getElementById('analysisContainer').innerHTML = '';
+        return;
+      }
+      
+      // Analyser chaque question
+      const analysisHtml = Object.keys(questions).map(questionKey => {
+        const questionText = questions[questionKey];
+        const answers = responses.map(r => r[questionKey]).filter(Boolean);
+        
+        if (answers.length === 0) return '';
+        
+        // Compter les réponses
+        const answerCounts = {};
+        answers.forEach(answer => {
+          answerCounts[answer] = (answerCounts[answer] || 0) + 1;
+        });
+        
+        // Créer les éléments d'analyse
+        const analysisItems = Object.entries(answerCounts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([answer, count]) => {
+            const percentage = ((count / answers.length) * 100).toFixed(1);
+            return `
+              <div class="analysis-item">
+                <span>${answer}</span>
+                <span class="analysis-percentage">${count} (${percentage}%)</span>
+              </div>
+            `;
+          }).join('');
+        
+        return `
+          <div class="analysis-card">
+            <div class="analysis-title">${questionText}</div>
+            ${analysisItems}
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('analysisContainer').innerHTML = analysisHtml;
+    }
+    
+    // Fonction pour exporter les données en CSV
+    function exportData() {
+      if (allResponses.length === 0) {
+        alert('Aucune donnée à exporter');
+        return;
+      }
+      
+      // Créer l'en-tête CSV
+      const headers = ['ID', 'Date', 'Score'];
+      Object.values(questions).forEach(q => headers.push(q));
+      headers.push('Commentaire');
+      
+      // Créer les lignes de données
+      const csvRows = [headers.join(',')];
+      
+      allResponses.forEach(response => {
+        const row = [
+          response.submissionId,
+          new Date(response.dateSubmitted).toLocaleString('fr-FR'),
+          calculateResponseScore(response).toFixed(1)
+        ];
+        
+        Object.keys(questions).forEach(questionKey => {
+          row.push(`"${(response[questionKey] || '').replace(/"/g, '""')}"`);
+        });
+        
+        row.push(`"${(response.comment || '').replace(/"/g, '""')}"`);
+        csvRows.push(row.join(','));
+      });
+      
+      // Télécharger le fichier
+      const csvContent = csvRows.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `groupe_express_responses_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    // Fonction pour effacer toutes les données
+    async function clearAllData() {
+      if (!confirm('Êtes-vous sûr de vouloir effacer toutes les données ? Cette action est irréversible.')) {
+        return;
+      }
+      
+      try {
+        await database.ref('questionnaires').remove();
+        alert('Toutes les données ont été effacées.');
+        loadResponses();
+      } catch (error) {
+        alert('Erreur lors de la suppression : ' + error.message);
+      }
+    }
+    
+    // Charger les données au démarrage
+    document.addEventListener('DOMContentLoaded', function() {
+      loadResponses();
+      
+      // Recharger automatiquement toutes les 30 secondes
+      setInterval(loadResponses, 30000);
+    });
+  </script>
+</body>
+</html>

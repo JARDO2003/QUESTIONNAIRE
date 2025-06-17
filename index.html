@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Groupe Express - Questionnaire Étudiant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2.5em;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      animation: slideIn 0.6s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .logo-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5em;
+      font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+    }
+    
+    h1 {
+      text-align: center;
+      color: #2d3436;
+      margin: 20px 0;
+      font-size: 2.2em;
+      font-weight: 300;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #636e72;
+      margin-bottom: 40px;
+      font-size: 1.1em;
+      padding: 0 20px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #27ae60, #2ecc71);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+    
+    .question {
+      margin-bottom: 30px;
+      padding: 25px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid #27ae60;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .question:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    
+    .question-label {
+      font-weight: 600;
+      color: #2d3436;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      display: block;
+    }
+    
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+    
+    .choice-item {
+      position: relative;
+    }
+    
+    .choice-item input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .choice-label {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      user-select: none;
+    }
+    
+    .choice-label:hover {
+      background: #e8f5e8;
+      border-color: #27ae60;
+      transform: translateY(-1px);
+    }
+    
+    .choice-item input[type="radio"]:checked + .choice-label {
+      background: #27ae60;
+      color: white;
+      border-color: #27ae60;
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    }
+    
+    .choice-label::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      margin-right: 12px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+    
+    .choice-item input[type="radio"]:checked + .choice-label::before {
+      background: white;
+      border-color: white;
+      box-shadow: inset 0 0 0 4px #27ae60;
+    }
+    
+    .comment-section {
+      margin-top: 40px;
+      padding: 25px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid #3498db;
+    }
+    
+    .comment-label {
+      font-weight: 600;
+      color: #2d3436;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1em;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .submit-btn {
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      border-radius: 50px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: all 0.3s ease;
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(39, 174, 96, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .error-message {
+      background: #ff6b6b;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    .success-message {
+      background: #2ecc71;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5em;
+        margin: 10px;
+      }
+      
+      .choices {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      .question {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-container">
+      <div class="logo">GE</div>
+    </div>
+    
+    <h1>Questionnaire Groupe Express</h1>
+    
+    <div class="subtitle">
+      Merci de prendre quelques minutes pour répondre à notre questionnaire.<br>
+      Groupe Express est une organisation récemment créée pour distribuer des repas plus sophistiqués à un prix abordable.
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+    
+    <form id="questionnaireForm">
+      <div class="question">
+        <label class="question-label">1. Que pensez-vous de la qualité de nos services ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q1" value="Excellent" id="q1_excellent" required>
+            <label for="q1_excellent" class="choice-label">Excellent</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q1" value="Bon" id="q1_bon">
+            <label for="q1_bon" class="choice-label">Bon</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q1" value="Moyen" id="q1_moyen">
+            <label for="q1_moyen" class="choice-label">Moyen</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q1" value="Mauvais" id="q1_mauvais">
+            <label for="q1_mauvais" class="choice-label">Mauvais</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">2. Nos prix sont-ils abordables ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q2" value="Oui" id="q2_oui" required>
+            <label for="q2_oui" class="choice-label">Oui</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q2" value="Non" id="q2_non">
+            <label for="q2_non" class="choice-label">Non</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">3. Êtes-vous satisfait du choix des repas proposés ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q3" value="Très satisfait" id="q3_tres" required>
+            <label for="q3_tres" class="choice-label">Très satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q3" value="Satisfait" id="q3_satisfait">
+            <label for="q3_satisfait" class="choice-label">Satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q3" value="Peu satisfait" id="q3_peu">
+            <label for="q3_peu" class="choice-label">Peu satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q3" value="Pas du tout" id="q3_pas">
+            <label for="q3_pas" class="choice-label">Pas du tout</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">4. Comment jugez-vous la rapidité du service ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q4" value="Très rapide" id="q4_tres" required>
+            <label for="q4_tres" class="choice-label">Très rapide</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q4" value="Rapide" id="q4_rapide">
+            <label for="q4_rapide" class="choice-label">Rapide</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q4" value="Correcte" id="q4_correcte">
+            <label for="q4_correcte" class="choice-label">Correcte</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q4" value="Lente" id="q4_lente">
+            <label for="q4_lente" class="choice-label">Lente</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">5. Le personnel est-il courtois et professionnel ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q5" value="Oui" id="q5_oui" required>
+            <label for="q5_oui" class="choice-label">Oui</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q5" value="Non" id="q5_non">
+            <label for="q5_non" class="choice-label">Non</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">6. Recommenderiez-vous Groupe Express à d'autres étudiants ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q6" value="Oui" id="q6_oui" required>
+            <label for="q6_oui" class="choice-label">Oui</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q6" value="Non" id="q6_non">
+            <label for="q6_non" class="choice-label">Non</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">7. Trouvez-vous la portion des repas suffisante ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q7" value="Oui" id="q7_oui" required>
+            <label for="q7_oui" class="choice-label">Oui</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q7" value="Non" id="q7_non">
+            <label for="q7_non" class="choice-label">Non</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">8. Comment évaluez-vous la propreté de nos locaux ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q8" value="Excellente" id="q8_excellente" required>
+            <label for="q8_excellente" class="choice-label">Excellente</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q8" value="Bonne" id="q8_bonne">
+            <label for="q8_bonne" class="choice-label">Bonne</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q8" value="Moyenne" id="q8_moyenne">
+            <label for="q8_moyenne" class="choice-label">Moyenne</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q8" value="Mauvaise" id="q8_mauvaise">
+            <label for="q8_mauvaise" class="choice-label">Mauvaise</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">9. Les horaires d'ouverture sont-ils adaptés ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q9" value="Oui" id="q9_oui" required>
+            <label for="q9_oui" class="choice-label">Oui</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q9" value="Non" id="q9_non">
+            <label for="q9_non" class="choice-label">Non</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="question">
+        <label class="question-label">10. Globalement, êtes-vous satisfait de Groupe Express ?</label>
+        <div class="choices">
+          <div class="choice-item">
+            <input type="radio" name="q10" value="Très satisfait" id="q10_tres" required>
+            <label for="q10_tres" class="choice-label">Très satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q10" value="Satisfait" id="q10_satisfait">
+            <label for="q10_satisfait" class="choice-label">Satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q10" value="Peu satisfait" id="q10_peu">
+            <label for="q10_peu" class="choice-label">Peu satisfait</label>
+          </div>
+          <div class="choice-item">
+            <input type="radio" name="q10" value="Pas du tout" id="q10_pas">
+            <label for="q10_pas" class="choice-label">Pas du tout</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="comment-section">
+        <label for="comment" class="comment-label">Commentaire personnel (optionnel) :</label>
+        <textarea id="comment" name="comment" placeholder="Partagez votre avis, suggestions ou remarques..."></textarea>
+      </div>
+      
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Envoyer mes réponses
+      </button>
+    </form>
+  </div>
+
+  <!-- Firebase SDKs pour Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuration Firebase - Vos vraies clés
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZKSBcBeE_ddlqrmNAru_YZRS4tAwRRvk",
+      authDomain: "database-5583e.firebaseapp.com",
+      databaseURL: "https://database-5583e-default-rtdb.firebaseio.com",
+      projectId: "database-5583e",
+      storageBucket: "database-5583e.firebasestorage.app",
+      messagingSenderId: "299502845257",
+      appId: "1:299502845257:web:c77c7f9ebc743abb63ee98",
+      measurementId: "G-YK85043ZPR"
+    };
+
+    // Initialiser Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Variables pour stocker les données
+    let formData = {};
+    let isSubmitting = false;
+    
+    // Éléments du DOM
+    const form = document.getElementById('questionnaireForm');
+    const progressFill = document.getElementById('progressFill');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Fonction pour mettre à jour la barre de progression
+    function updateProgress() {
+      let answeredQuestions = 0;
+      const totalQuestions = 10;
+      
+      for (let i = 1; i <= totalQuestions; i++) {
+        const radios = document.getElementsByName(`q${i}`);
+        for (let radio of radios) {
+          if (radio.checked) {
+            answeredQuestions++;
+            break;
+          }
+        }
+      }
+      
+      const progress = (answeredQuestions / totalQuestions) * 100;
+      progressFill.style.width = progress + '%';
+    }
+    
+    // Fonction pour afficher les messages d'erreur
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+      successMessage.style.display = 'none';
+      
+      // Scroll vers le message d'erreur
+      errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Masquer le message après 5 secondes
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 5000);
+    }
+    
+    // Fonction pour afficher les messages de succès
+    function showSuccess(message) {
+      successMessage.textContent = message;
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+    }
+    
+    // Fonction pour valider le formulaire
+    function validateForm() {
+      for (let i = 1; i <= 10; i++) {
+        const radios = document.getElementsByName(`q${i}`);
+        let checked = false;
+        
+        for (let radio of radios) {
+          if (radio.checked) {
+            checked = true;
+            break;
+          }
+        }
+        
+        if (!checked) {
+          showError(`Veuillez répondre à la question ${i}.`);
+          return false;
+        }
+      }
+      return true;
+    }
+    
+    // Fonction pour collecter les données du formulaire
+    function collectFormData() {
+      const data = {};
+      
+      // Collecter les réponses aux questions
+      for (let i = 1; i <= 10; i++) {
+        const radios = document.getElementsByName(`q${i}`);
+        for (let radio of radios) {
+          if (radio.checked) {
+            data[`q${i}`] = radio.value;
+            break;
+          }
+        }
+      }
+      
+      // Collecter le commentaire
+      data.comment = document.getElementById('comment').value.trim();
+      
+      // Ajouter timestamp et ID unique
+      data.timestamp = firebase.database.ServerValue.TIMESTAMP;
+      data.submissionId = Date.now().toString();
+      data.dateSubmitted = new Date().toISOString();
+      
+      return data;
+    }
+    
+    // Fonction pour envoyer les données vers Firebase Realtime Database
+    async function submitToRealtimeDatabase(data) {
+      try {
+        // Envoyer vers le nœud "questionnaires" avec un ID unique
+        const questionnairesRef = database.ref('questionnaires');
+        const newQuestionnaireRef = questionnairesRef.push();
+        
+        await newQuestionnaireRef.set(data);
+        
+        console.log('Données sauvegardées avec succès dans Realtime Database');
+        return { success: true, id: newQuestionnaireRef.key };
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde dans Realtime Database: ', error);
+        throw error;
+      }
+    }
+    
+    // Gestionnaire de soumission du formulaire  
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      
+      // Éviter les soumissions multiples
+      if (isSubmitting) return;
+      
+      // Valider le formulaire
+      if (!validateForm()) return;
+      
+      // Marquer comme en cours de soumission
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours...';
+      
+      try {
+        // Collecter les données
+        const data = collectFormData();
+        
+        // Envoyer vers Firebase Realtime Database
+        const result = await submitToRealtimeDatabase(data);
+        
+        // Stocker les données localement aussi
+        formData = data;
+        
+        // Afficher le message de succès
+        showSuccess('Merci ! Vos réponses ont été enregistrées avec succès dans Firebase Realtime Database.');
+        
+        // Masquer le formulaire
+        form.style.display = 'none';
+        
+        // Optionnel: redirection après 2 secondes
+        setTimeout(() => {
+          // window.location.href = "marcio.html";
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Erreur lors de l\'envoi vers Firebase:', error);
+        let errorMsg = 'Une erreur est survenue lors de l\'envoi. ';
+        
+        if (error.code === 'PERMISSION_DENIED') {
+          errorMsg += 'Vérifiez les règles de sécurité Firebase Realtime Database.';
+        } else if (error.code === 'NETWORK_ERROR') {
+          errorMsg += 'Problème de connexion réseau.';
+        } else {
+          errorMsg += 'Veuillez vérifier votre configuration Firebase.';
+        }
+        
+        showError(errorMsg);
+      } finally {
+        // Remettre le bouton dans son état normal
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer mes réponses';
+      }
+    });
+    
+    // Mettre à jour la progression quand l'utilisateur sélectionne une réponse
+    form.addEventListener('change', updateProgress);
+    
+    // Initialiser la progression au chargement
+    updateProgress();
+    
+    // Fonction pour obtenir les données du formulaire (utile pour le debug)
+    window.getFormData = function() {
+      return formData;
+    };
+
+    // Fonction pour tester la connexion Firebase Realtime Database
+    window.testFirebaseConnection = function() {
+      const testRef = database.ref('test');
+      testRef.push({
+        message: 'Test connection Realtime Database',
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        date: new Date().toISOString()
+      })
+      .then(() => {
+        console.log('Test réussi! Connexion Realtime Database OK');
+        alert('Connexion Firebase Realtime Database OK!');
+      })
+      .catch((error) => {
+        console.error('Erreur de connexion Firebase Realtime Database: ', error);
+        alert('Erreur de connexion Firebase: ' + error.message);
+      });
+    };
+
+    // Fonction pour lire les données du questionnaire (pour vérification)
+    window.readQuestionnaires = function() {
+      const questionnairesRef = database.ref('questionnaires');
+      questionnairesRef.once('value')
+        .then((snapshot) => {
+          const data = snapshot.val();
+          console.log('Données des questionnaires:', data);
+          alert('Consultez la console pour voir les données');
+        })
+        .catch((error) => {
+          console.error('Erreur lors de la lecture:', error);
+          alert('Erreur: ' + error.message);
+        });
+    };
+    
+
+  </script>
+</body>
+</html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Bouton Accès Fournisseur</title>
+  <style>
+    .btn-fournisseur {
+      padding: 12px 24px;
+      background-color: #007BFF;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .btn-fournisseur:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn-fournisseur" onclick="accesFournisseur()">Accès Fournisseur</button>
+
+  <script>
+    function accesFournisseur() {
+      const code = prompt("Entrez le code d'accès :");
+      if (code === "kolo@") {
+        window.location.href = "marcio.html";
+      } else {
+        alert("Accès refusé.");
+      }
+    }
+  </script>
+
+</body>
+</html>
