@@ -346,6 +346,56 @@
         font-size: 3em;
       }
     }
+    /* Style de base pour les grands écrans */
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Images et vidéos adaptables */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Adaptation aux petits écrans */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .grid {
+    display: block; /* empile les éléments au lieu d’une grille */
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  .full-width {
+    width: 100% !important;
+  }
+}
+
   </style>
 </head>
 <body>
